@@ -1,77 +1,191 @@
 import React, { Component, Fragment } from 'react';
 
-class App extends Component {
+import { PageHeader, PageFooter, TodoInput, TodoList, TodoFooter } from './components';
+import {
+    validateTodoLabel,
+    createTodo,
+    isEnterKey,
+    isEscKey,
+    getStoreItems,
+    setStoreItems,
+    filterTodosByType,
+    TodoFilterType,
+} from './lib';
+
+type AppState = {
+    inputValue: string;
+    todos: Todo[];
+    editUuid?: TodoUUID;
+    editValue: string;
+    toggleAllChecked: boolean;
+    selectedFilter: TodoFilterType;
+};
+
+class App extends Component<{}, AppState> {
+    state = {
+        inputValue: '',
+        todos: getStoreItems(),
+        editUuid: undefined,
+        editValue: '',
+        toggleAllChecked: false,
+        selectedFilter: TodoFilterType.All,
+    };
+
+    componentDidUpdate(_prevProps: any, prevState: AppState) {
+        const { todos } = this.state;
+
+        if (prevState.todos !== todos) {
+            setStoreItems(todos);
+        }
+    }
+
+    isEditing = () => this.state.editUuid !== undefined;
+
+    getCompleted = () => this.state.todos.filter((todo) => todo.completed);
+
+    handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+        this.setState({
+            inputValue: event.target.value,
+        });
+    };
+
+    handleInputKeyUp: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
+        const { inputValue } = this.state;
+
+        if (validateTodoLabel(inputValue) && isEnterKey(event)) {
+            this.setState(({ todos, inputValue }) => ({
+                todos: [...todos, createTodo(inputValue)],
+                inputValue: '',
+            }));
+        }
+    };
+
+    handleEditStart = (editUuid: TodoUUID) => {
+        const { todos } = this.state;
+        const todo = todos.find((todo) => todo.uuid === editUuid);
+        if (!todo) {
+            return;
+        }
+
+        this.setState({
+            editUuid,
+            editValue: todo.label,
+        });
+    };
+
+    handleEditKeyUp: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
+        if (!this.isEditing()) {
+            return;
+        }
+        const { editValue } = this.state;
+
+        if (validateTodoLabel(editValue) && isEnterKey(event)) {
+            this.setState(({ todos, editUuid, editValue }) => ({
+                todos: todos.map((todo) => ({
+                    ...todo,
+                    label: todo.uuid === editUuid ? editValue : todo.label,
+                })),
+                editUuid: undefined,
+                editValue: '',
+            }));
+        }
+
+        if (isEscKey(event)) {
+            this.setState({
+                editUuid: undefined,
+                editValue: '',
+            });
+        }
+    };
+
+    handleEditChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+        if (!this.isEditing()) {
+            return;
+        }
+
+        this.setState({
+            editValue: event.target.value,
+        });
+    };
+
+    handleCheckboxChange = (uuid: TodoUUID, event: React.ChangeEvent<HTMLInputElement>) => {
+        const nextValue = event.target.checked;
+        this.setState(({ todos }) => ({
+            todos: todos.map((todo) => ({
+                ...todo,
+                completed: todo.uuid === uuid ? nextValue : todo.completed,
+            })),
+        }));
+    };
+
+    handleDestroy = (uuid: TodoUUID) => {
+        this.setState(({ todos }) => ({
+            todos: todos.filter((todo) => todo.uuid !== uuid),
+        }));
+    };
+
+    handleClearCompleted = () => {
+        this.setState(({ todos }) => ({
+            todos: filterTodosByType(todos, TodoFilterType.Active),
+        }));
+    };
+
+    handleToggleAllChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+        const { checked } = event.target;
+        this.setState(({ todos }) => ({
+            toggleAllChecked: checked,
+            todos: todos.map((todo) => ({ ...todo, completed: checked })),
+        }));
+    };
+
+    handleFilterChange = (filter: TodoFilterType) => {
+        this.setState({
+            selectedFilter: filter,
+        });
+    };
+
     render() {
+        const {
+            inputValue,
+            todos,
+            editUuid,
+            editValue,
+            toggleAllChecked,
+            selectedFilter,
+        } = this.state;
+        const visibleTodos = filterTodosByType(todos, selectedFilter);
+
         return (
             <Fragment>
                 <section className="todoapp">
-                    <header className="header">
-                        <h1>todos</h1>
-                        <input
-                            className="new-todo"
-                            placeholder="What needs to be done?"
-                            autoFocus
+                    <PageHeader>
+                        <TodoInput
+                            onKeyUp={this.handleInputKeyUp}
+                            onChange={this.handleInputChange}
+                            value={inputValue}
                         />
-                    </header>
-                    {/* This section should be hidden by default and shown when there are todos */}
-                    <section className="main">
-                        <input id="toggle-all" className="toggle-all" type="checkbox" />
-                        <label htmlFor="toggle-all">Mark all as complete</label>
-                        <ul className="todo-list">
-                            {/* These are here just to show the structure of the list items */}
-                            {/* List items should get the class `editing` when editing and `completed` when marked as completed */}
-                            <li className="completed">
-                                <div className="view">
-                                    <input className="toggle" type="checkbox" defaultChecked />
-                                    <label>Taste JavaScript</label>
-                                    <button className="destroy" />
-                                </div>
-                                <input className="edit" defaultValue="Create a TodoMVC template" />
-                            </li>
-                            <li>
-                                <div className="view">
-                                    <input className="toggle" type="checkbox" />
-                                    <label>Buy a unicorn</label>
-                                    <button className="destroy" />
-                                </div>
-                                <input className="edit" defaultValue="Rule the web" />
-                            </li>
-                        </ul>
-                    </section>
-                    {/* This footer should hidden by default and shown when there are todos */}
-                    <footer className="footer">
-                        {/* This should be `0 items left` by default */}
-                        <span className="todo-count">
-                            <strong>0</strong> item left
-                        </span>
-                        {/* Remove this if you don't implement routing */}
-                        <ul className="filters">
-                            <li>
-                                <a className="selected" href="#/">
-                                    All
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#/active">Active</a>
-                            </li>
-                            <li>
-                                <a href="#/completed">Completed</a>
-                            </li>
-                        </ul>
-                        {/* Hidden if no completed items are left ↓ */}
-                        <button className="clear-completed">Clear completed</button>
-                    </footer>
+                    </PageHeader>
+                    <TodoList
+                        todos={visibleTodos}
+                        editUuid={editUuid}
+                        editValue={editValue}
+                        toggleAllChecked={toggleAllChecked}
+                        onToggleAllChange={this.handleToggleAllChange}
+                        onEditStart={this.handleEditStart}
+                        onEditKeyUp={this.handleEditKeyUp}
+                        onEditChange={this.handleEditChange}
+                        onCheckboxChange={this.handleCheckboxChange}
+                        onDestroy={this.handleDestroy}
+                    />
+                    <TodoFooter
+                        totalCount={todos.length}
+                        completedCount={this.getCompleted().length}
+                        onClearClick={this.handleClearCompleted}
+                        selectedFilter={selectedFilter}
+                        onFilterChange={this.handleFilterChange}
+                    />
                 </section>
-                <footer className="info">
-                    <p>Double-click to edit a todo</p>
-                    {/* Change this out with your name and url ↓ */}
-                    <p>
-                        Created by <a href="http://todomvc.com">you</a>
-                    </p>
-                    <p>
-                        Part of <a href="http://todomvc.com">TodoMVC</a>
-                    </p>
-                </footer>
+                <PageFooter />
             </Fragment>
         );
     }
