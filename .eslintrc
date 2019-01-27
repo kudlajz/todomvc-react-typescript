@@ -8,7 +8,6 @@
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaFeatures": {
-            "jsx": true,
             "modules": true
         },
         "project": "./tsconfig.json",
@@ -26,7 +25,12 @@
     },
     "plugins": ["@typescript-eslint", "compat", "react"],
     "settings": {
-        "import/extensions": [".js", ".jsx", ".ts", ".tsx"],
+        "import/resolver": {
+            "node": {
+                "moduleDirectory": ["node_modules", "src"],
+                "extensions": [".js", ".jsx", ".ts", ".tsx"]
+            }
+        },
         "polyfills": ["promises"]
     },
     "rules": {
@@ -80,6 +84,11 @@
         "jsx-a11y/no-noninteractive-element-interactions": "warn",
         "jsx-a11y/no-noninteractive-element-to-interactive-role": "warn",
         "jsx-a11y/no-static-element-interactions": "warn",
-        "jsx-a11y/role-has-required-aria-props": "warn"
+        "jsx-a11y/role-has-required-aria-props": "warn",
+        "react/jsx-filename-extension": ["warn", { "extensions": [".jsx", ".tsx"] }],
+        "@typescript-eslint/indent": 0,
+        "@typescript-eslint/member-delimiter-style": 0,
+        "@typescript-eslint/type-annotation-spacing": 0,
+        "@typescript-eslint/explicit-member-accessibility": 0
     }
 }
