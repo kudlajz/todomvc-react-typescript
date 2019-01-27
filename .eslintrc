@@ -86,6 +86,7 @@
         "jsx-a11y/no-static-element-interactions": "warn",
         "jsx-a11y/role-has-required-aria-props": "warn",
         "react/jsx-filename-extension": ["warn", { "extensions": [".jsx", ".tsx"] }],
+        "react/destructuring-assignment": ["error", "always", { "ignoreClassFields": true }],
         "@typescript-eslint/indent": 0,
         "@typescript-eslint/member-delimiter-style": 0,
         "@typescript-eslint/type-annotation-spacing": 0,
