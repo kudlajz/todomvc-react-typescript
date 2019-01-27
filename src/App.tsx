@@ -1,24 +1,16 @@
 import React, { Component, Fragment } from 'react';
 
 import { PageHeader, PageFooter, TodoInput, TodoList, TodoFooter } from './components';
-import { createTodo, getStoreItems, setStoreItems, filterTodosByType, TodoFilterType } from './lib';
+import { createTodo, getStoreItems, setStoreItems, TodoFilterType } from './lib';
 
 type AppState = {
-    inputValue: string;
     todos: Todo[];
-    editUuid?: TodoUUID;
-    editValue: string;
-    toggleAllChecked: boolean;
     selectedFilter: TodoFilterType;
 };
 
 class App extends Component<{}, AppState> {
     state = {
-        inputValue: '',
         todos: getStoreItems(),
-        editUuid: undefined,
-        editValue: '',
-        toggleAllChecked: false,
         selectedFilter: TodoFilterType.All,
     };
 
@@ -36,12 +28,6 @@ class App extends Component<{}, AppState> {
         }));
     };
 
-    handleClearCompleted = () => {
-        this.setState(({ todos }) => ({
-            todos: filterTodosByType(todos, TodoFilterType.Active),
-        }));
-    };
-
     handleTodosChange = (nextTodos: Todo[]) => {
         this.setState({
             todos: nextTodos,
@@ -56,7 +42,6 @@ class App extends Component<{}, AppState> {
 
     render() {
         const { todos, selectedFilter } = this.state;
-        const completedCount = filterTodosByType(todos, TodoFilterType.Completed).length;
 
         return (
             <Fragment>
@@ -74,10 +59,9 @@ class App extends Component<{}, AppState> {
                         onTodosChange={this.handleTodosChange}
                     />
                     <TodoFooter
-                        totalCount={todos.length}
-                        completedCount={completedCount}
-                        onClearClick={this.handleClearCompleted}
+                        todos={todos}
                         selectedFilter={selectedFilter}
+                        onTodosChange={this.handleTodosChange}
                         onFilterChange={this.handleFilterChange}
                     />
                 </section>
