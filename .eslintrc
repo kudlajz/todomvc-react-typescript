@@ -1,0 +1,85 @@
+{
+    "extends": [
+        "airbnb",
+        "plugin:prettier/recommended",
+        "prettier/react",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true,
+            "modules": true
+        },
+        "project": "./tsconfig.json",
+        "tsconfigRootDir": "./"
+    },
+    "env": {
+        "browser": true,
+        "es6": true,
+        "jasmine": true,
+        "jest": true
+    },
+    "globals": {
+        "$": false,
+        "Raven": false
+    },
+    "plugins": ["@typescript-eslint", "compat", "react"],
+    "settings": {
+        "import/extensions": [".js", ".jsx", ".ts", ".tsx"],
+        "polyfills": ["promises"]
+    },
+    "rules": {
+        "no-throw-literal": 0,
+        "camelcase": "warn",
+        "prefer-destructuring": "warn",
+        "no-plusplus": "warn",
+        "no-nested-ternary": "warn",
+        "no-return-assign": ["error", "except-parens"],
+        "compat/compat": "error",
+        "import/order": [
+            "error",
+            {
+                "groups": [["builtin", "external"], "internal", "parent", "sibling", "index"],
+                "newlines-between": "always"
+            }
+        ],
+        "import/prefer-default-export": "warn",
+        "react/prefer-stateless-function": 0,
+        "react/require-default-props": "warn",
+        "react/no-unused-prop-types": "warn",
+        "react/forbid-prop-types": "warn",
+        "react/default-props-match-prop-types": [
+            "warn",
+            {
+                "allowRequiredDefaults": true
+            }
+        ],
+        "react/prop-types": "warn",
+        "react/no-array-index-key": "warn",
+        "react/no-unused-state": "warn",
+        "react/sort-comp": [
+            "warn",
+            {
+                "order": [
+                    "static-methods",
+                    "instance-variables",
+                    "lifecycle",
+                    "everything-else",
+                    "render"
+                ]
+            }
+        ],
+        "react/no-unescaped-entities": ["error", { "forbid": [">", "}"] }],
+        "jsx-a11y/alt-text": "warn",
+        "jsx-a11y/anchor-is-valid": "warn",
+        "jsx-a11y/click-events-have-key-events": "warn",
+        "jsx-a11y/iframe-has-title": "warn",
+        "jsx-a11y/label-has-for": "warn",
+        "jsx-a11y/no-autofocus": "warn",
+        "jsx-a11y/no-noninteractive-element-interactions": "warn",
+        "jsx-a11y/no-noninteractive-element-to-interactive-role": "warn",
+        "jsx-a11y/no-static-element-interactions": "warn",
+        "jsx-a11y/role-has-required-aria-props": "warn"
+    }
+}
