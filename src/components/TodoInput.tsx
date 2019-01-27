@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
-import { isEnterKey, validateTodoLabel } from '../lib';
+import { isEnterKey, validateTodoLabel, isEscKey } from '../lib';
 
 type TodoInputProps = {
-    onTodoCreate: (value: string) => void;
+    onCreate: (value: string) => void;
+    onCancel?: () => void;
+    className?: string;
+    placeholder?: string;
+    value?: string;
 };
 
 type TodoInputState = {
@@ -11,7 +15,7 @@ type TodoInputState = {
 
 class TodoInput extends Component<TodoInputProps, TodoInputState> {
     state = {
-        value: '',
+        value: this.props.value || '',
     };
 
     handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
@@ -21,24 +25,29 @@ class TodoInput extends Component<TodoInputProps, TodoInputState> {
     };
 
     handleKeyUp: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
-        const { onTodoCreate } = this.props;
+        const { onCreate, onCancel } = this.props;
         const { value } = this.state;
 
         if (validateTodoLabel(value) && isEnterKey(event)) {
-            onTodoCreate(value);
+            onCreate(value);
             this.setState({
                 value: '',
             });
         }
+
+        if (onCancel && isEscKey(event)) {
+            onCancel();
+        }
     };
 
     render() {
+        const { className, placeholder } = this.props;
         const { value } = this.state;
 
         return (
             <input
-                className="new-todo"
-                placeholder="What needs to be done?"
+                className={className}
+                placeholder={placeholder}
                 autoFocus
                 onKeyUp={this.handleKeyUp}
                 onChange={this.handleChange}

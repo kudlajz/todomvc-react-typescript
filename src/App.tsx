@@ -1,16 +1,7 @@
 import React, { Component, Fragment } from 'react';
 
 import { PageHeader, PageFooter, TodoInput, TodoList, TodoFooter } from './components';
-import {
-    validateTodoLabel,
-    createTodo,
-    isEnterKey,
-    isEscKey,
-    getStoreItems,
-    setStoreItems,
-    filterTodosByType,
-    TodoFilterType,
-} from './lib';
+import { createTodo, getStoreItems, setStoreItems, filterTodosByType, TodoFilterType } from './lib';
 
 type AppState = {
     inputValue: string;
@@ -39,77 +30,9 @@ class App extends Component<{}, AppState> {
         }
     }
 
-    isEditing = () => this.state.editUuid !== undefined;
-
-    getCompleted = () => this.state.todos.filter((todo) => todo.completed);
-
     handleTodoCreate = (label: string) => {
         this.setState(({ todos }) => ({
             todos: [...todos, createTodo(label)],
-        }));
-    };
-
-    handleEditStart = (editUuid: TodoUUID) => {
-        const { todos } = this.state;
-        const todo = todos.find((todo) => todo.uuid === editUuid);
-        if (!todo) {
-            return;
-        }
-
-        this.setState({
-            editUuid,
-            editValue: todo.label,
-        });
-    };
-
-    handleEditKeyUp: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
-        if (!this.isEditing()) {
-            return;
-        }
-        const { editValue } = this.state;
-
-        if (validateTodoLabel(editValue) && isEnterKey(event)) {
-            this.setState(({ todos, editUuid, editValue }) => ({
-                todos: todos.map((todo) => ({
-                    ...todo,
-                    label: todo.uuid === editUuid ? editValue : todo.label,
-                })),
-                editUuid: undefined,
-                editValue: '',
-            }));
-        }
-
-        if (isEscKey(event)) {
-            this.setState({
-                editUuid: undefined,
-                editValue: '',
-            });
-        }
-    };
-
-    handleEditChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
-        if (!this.isEditing()) {
-            return;
-        }
-
-        this.setState({
-            editValue: event.target.value,
-        });
-    };
-
-    handleCheckboxChange = (uuid: TodoUUID, event: React.ChangeEvent<HTMLInputElement>) => {
-        const nextValue = event.target.checked;
-        this.setState(({ todos }) => ({
-            todos: todos.map((todo) => ({
-                ...todo,
-                completed: todo.uuid === uuid ? nextValue : todo.completed,
-            })),
-        }));
-    };
-
-    handleDestroy = (uuid: TodoUUID) => {
-        this.setState(({ todos }) => ({
-            todos: todos.filter((todo) => todo.uuid !== uuid),
         }));
     };
 
@@ -119,12 +42,10 @@ class App extends Component<{}, AppState> {
         }));
     };
 
-    handleToggleAllChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
-        const { checked } = event.target;
-        this.setState(({ todos }) => ({
-            toggleAllChecked: checked,
-            todos: todos.map((todo) => ({ ...todo, completed: checked })),
-        }));
+    handleTodosChange = (nextTodos: Todo[]) => {
+        this.setState({
+            todos: nextTodos,
+        });
     };
 
     handleFilterChange = (filter: TodoFilterType) => {
@@ -134,30 +55,27 @@ class App extends Component<{}, AppState> {
     };
 
     render() {
-        const { todos, editUuid, editValue, toggleAllChecked, selectedFilter } = this.state;
-        const visibleTodos = filterTodosByType(todos, selectedFilter);
+        const { todos, selectedFilter } = this.state;
+        const completedCount = filterTodosByType(todos, TodoFilterType.Completed).length;
 
         return (
             <Fragment>
                 <section className="todoapp">
                     <PageHeader>
-                        <TodoInput onTodoCreate={this.handleTodoCreate} />
+                        <TodoInput
+                            onCreate={this.handleTodoCreate}
+                            className="new-todo"
+                            placeholder="What needs to be done?"
+                        />
                     </PageHeader>
                     <TodoList
-                        todos={visibleTodos}
-                        editUuid={editUuid}
-                        editValue={editValue}
-                        toggleAllChecked={toggleAllChecked}
-                        onToggleAllChange={this.handleToggleAllChange}
-                        onEditStart={this.handleEditStart}
-                        onEditKeyUp={this.handleEditKeyUp}
-                        onEditChange={this.handleEditChange}
-                        onCheckboxChange={this.handleCheckboxChange}
-                        onDestroy={this.handleDestroy}
+                        todos={todos}
+                        selectedFilter={selectedFilter}
+                        onTodosChange={this.handleTodosChange}
                     />
                     <TodoFooter
                         totalCount={todos.length}
-                        completedCount={this.getCompleted().length}
+                        completedCount={completedCount}
                         onClearClick={this.handleClearCompleted}
                         selectedFilter={selectedFilter}
                         onFilterChange={this.handleFilterChange}
