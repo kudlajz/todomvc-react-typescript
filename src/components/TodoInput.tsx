@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
+
 import { isEnterKey, validateTodoLabel, isEscKey } from '../lib';
 
-type TodoInputProps = {
+interface TodoInputProps {
     onCreate: (value: string) => void;
     onCancel?: () => void;
     className?: string;
     placeholder?: string;
     value?: string;
-};
+}
 
-type TodoInputState = {
+interface TodoInputState {
     value: string;
-};
+}
 
 class TodoInput extends Component<TodoInputProps, TodoInputState> {
     state = {

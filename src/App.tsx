@@ -3,10 +3,10 @@ import React, { Component, Fragment } from 'react';
 import { PageHeader, PageFooter, TodoInput, TodoList, TodoFooter } from './components';
 import { createTodo, getStoreItems, setStoreItems, TodoFilterType } from './lib';
 
-type AppState = {
+interface AppState {
     todos: Todo[];
     selectedFilter: TodoFilterType;
-};
+}
 
 class App extends Component<{}, AppState> {
     state = {

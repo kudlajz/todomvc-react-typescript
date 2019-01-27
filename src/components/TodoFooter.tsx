@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 
-import TodoFilters from './TodoFilters';
 import { filterTodosByType, TodoFilterType } from '../lib';
 
-type TodoFooterProps = {
+import TodoFilters from './TodoFilters';
+
+interface TodoFooterProps {
     todos: Todo[];
     selectedFilter: TodoFilterType;
     onTodosChange: (nextTodos: Todo[]) => void;
     onFilterChange: (nextFilter: TodoFilterType) => void;
-};
+}
 
 class TodoFooter extends Component<TodoFooterProps> {
     handleClearCompletedClick: React.MouseEventHandler<HTMLButtonElement> = () => {

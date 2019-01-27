@@ -1,8 +1,8 @@
 import React from 'react';
 
-type PageHeaderProps = {
+interface PageHeaderProps {
     children: React.ReactElement<{}>;
-};
+}
 
 const PageHeader: React.FunctionComponent<PageHeaderProps> = ({ children }) => (
     <header className="header">

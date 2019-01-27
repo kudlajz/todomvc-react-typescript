@@ -3,10 +3,10 @@ import classNames from 'classnames';
 
 import { TodoFilterType } from '../lib';
 
-export type TodoFiltersProps = {
+export interface TodoFiltersProps {
     selectedFilter: TodoFilterType;
     onFilterChange: (filter: TodoFilterType) => void;
-};
+}
 
 const filters = [
     { type: TodoFilterType.All, label: 'All' },

@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 
-import { TodoInput } from './';
+import { TodoInput } from '.';
 
-export type TodoItemProps = {
+export interface TodoItemProps {
     todo: Todo;
     editing: boolean;
     onEditStart: (uuid: TodoUUID) => void;
     onEditCancel: () => void;
     onTodoChange: (editedTodo: Todo) => void;
     onDestroy: (uuid: TodoUUID) => void;
-};
+}
 
 class TodoItem extends Component<TodoItemProps> {
     handleTodoChange = (nextTodoProps: Partial<Todo>) => {

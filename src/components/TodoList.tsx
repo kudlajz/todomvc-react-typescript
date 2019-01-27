@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
 
-import TodoItem from './TodoItem';
 import { filterTodosByType, TodoFilterType } from '../lib';
 
-type TodoListProps = {
+import TodoItem from './TodoItem';
+
+interface TodoListProps {
     todos: Todo[];
     selectedFilter: TodoFilterType;
     onTodosChange: (nextTodos: Todo[]) => void;
-};
+}
 
-type TodoListState = {
+interface TodoListState {
     toggleAllChecked: boolean;
     editUuid: TodoUUID | undefined;
-};
+}
 
 function areAllTodosCompleted(todos: Todo[]) {
     return todos.every(({ completed }) => completed);

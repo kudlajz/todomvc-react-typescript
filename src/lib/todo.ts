@@ -3,11 +3,11 @@ import uuid from 'uuid';
 declare global {
     type TodoUUID = string;
 
-    type Todo = {
+    interface Todo {
         uuid: TodoUUID;
         label: string;
         completed: boolean;
-    };
+    }
 }
 
 export enum TodoFilterType {
