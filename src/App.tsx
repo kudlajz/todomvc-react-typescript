@@ -14,7 +14,7 @@ class App extends Component<{}, AppState> {
         selectedFilter: TodoFilterType.All,
     };
 
-    componentDidUpdate(_prevProps: any, prevState: AppState) {
+    componentDidUpdate(_prevProps: {}, prevState: AppState): void {
         const { todos } = this.state;
 
         if (prevState.todos !== todos) {
@@ -40,7 +40,7 @@ class App extends Component<{}, AppState> {
         });
     };
 
-    render() {
+    render(): React.ReactNode {
         const { todos, selectedFilter } = this.state;
 
         return (

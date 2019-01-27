@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PageFooter: React.FunctionComponent = () => (
+const PageFooter: React.FunctionComponent<{}> = (): React.ReactElement<{}> => (
     <footer className="info">
         <p>Double-click to edit a todo</p>
         <p>

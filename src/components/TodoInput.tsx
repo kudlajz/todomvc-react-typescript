@@ -41,7 +41,7 @@ class TodoInput extends Component<TodoInputProps, TodoInputState> {
         }
     };
 
-    render() {
+    render(): React.ReactNode {
         const { className, placeholder } = this.props;
         const { value } = this.state;
 
@@ -49,7 +49,7 @@ class TodoInput extends Component<TodoInputProps, TodoInputState> {
             <input
                 className={className}
                 placeholder={placeholder}
-                autoFocus
+                autoFocus // eslint-disable-line jsx-a11y/no-autofocus
                 onKeyUp={this.handleKeyUp}
                 onChange={this.handleChange}
                 value={value}

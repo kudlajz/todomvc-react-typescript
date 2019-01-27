@@ -19,7 +19,7 @@ class TodoFooter extends Component<TodoFooterProps> {
         onTodosChange(nextTodos);
     };
 
-    render() {
+    render(): React.ReactNode {
         const { todos, selectedFilter, onFilterChange } = this.props;
         const totalCount = todos.length;
         const completedCount = filterTodosByType(todos, TodoFilterType.Completed).length;
@@ -35,7 +35,11 @@ class TodoFooter extends Component<TodoFooterProps> {
                 </span>
                 <TodoFilters selectedFilter={selectedFilter} onFilterChange={onFilterChange} />
                 {completedCount > 0 && (
-                    <button className="clear-completed" onClick={this.handleClearCompletedClick}>
+                    <button
+                        className="clear-completed"
+                        type="button"
+                        onClick={this.handleClearCompletedClick}
+                    >
                         Clear completed
                     </button>
                 )}

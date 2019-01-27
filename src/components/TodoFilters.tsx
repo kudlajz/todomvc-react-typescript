@@ -18,7 +18,7 @@ function handleFilterClick(
     event: React.MouseEvent<HTMLAnchorElement>,
     type: TodoFilterType,
     onFilterChange: TodoFiltersProps['onFilterChange'],
-) {
+): void {
     event.preventDefault();
     onFilterChange(type);
 }
@@ -26,7 +26,7 @@ function handleFilterClick(
 const TodoFilters: React.FunctionComponent<TodoFiltersProps> = ({
     selectedFilter,
     onFilterChange,
-}) => (
+}): React.ReactElement<TodoFiltersProps> => (
     <ul className="filters">
         {filters.map(({ type, label }) => (
             <li key={label}>

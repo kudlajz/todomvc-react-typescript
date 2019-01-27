@@ -15,7 +15,7 @@ interface TodoListState {
     editUuid: TodoUUID | undefined;
 }
 
-function areAllTodosCompleted(todos: Todo[]) {
+function areAllTodosCompleted(todos: Todo[]): boolean {
     return todos.every(({ completed }) => completed);
 }
 
@@ -25,10 +25,11 @@ class TodoList extends Component<TodoListProps, TodoListState> {
         editUuid: undefined,
     };
 
-    componentDidUpdate(prevProps: TodoListProps) {
+    componentDidUpdate(prevProps: TodoListProps): void {
         const { todos } = this.props;
 
         if (todos !== prevProps.todos) {
+            // eslint-disable-next-line react/no-did-update-set-state
             this.setState({
                 toggleAllChecked: areAllTodosCompleted(todos),
             });
@@ -73,7 +74,7 @@ class TodoList extends Component<TodoListProps, TodoListState> {
         onTodosChange(nextTodos);
     };
 
-    render() {
+    render(): React.ReactNode {
         const { todos, selectedFilter } = this.props;
         const { toggleAllChecked, editUuid } = this.state;
         const visibleTodos = filterTodosByType(todos, selectedFilter);

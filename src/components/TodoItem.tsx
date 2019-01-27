@@ -54,9 +54,9 @@ class TodoItem extends Component<TodoItemProps> {
         onDestroy(uuid);
     };
 
-    render() {
+    render(): React.ReactNode {
         const {
-            todo: { label, completed },
+            todo: { uuid, label, completed },
             editing,
         } = this.props;
 
@@ -64,13 +64,16 @@ class TodoItem extends Component<TodoItemProps> {
             <li className={classNames({ completed, editing })}>
                 <div className="view">
                     <input
+                        id={uuid}
                         className="toggle"
                         type="checkbox"
                         onChange={this.handleCheckboxChange}
                         checked={completed}
                     />
-                    <label onDoubleClick={this.handleLabelDoubleClick}>{label}</label>
-                    <button className="destroy" onClick={this.handleDestroyClick} />
+                    <label htmlFor={uuid} onDoubleClick={this.handleLabelDoubleClick}>
+                        {label}
+                    </label>
+                    <button className="destroy" type="button" onClick={this.handleDestroyClick} />
                 </div>
                 {editing && (
                     <TodoInput
