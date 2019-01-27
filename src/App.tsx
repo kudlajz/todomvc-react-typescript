@@ -43,21 +43,10 @@ class App extends Component<{}, AppState> {
 
     getCompleted = () => this.state.todos.filter((todo) => todo.completed);
 
-    handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
-        this.setState({
-            inputValue: event.target.value,
-        });
-    };
-
-    handleInputKeyUp: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
-        const { inputValue } = this.state;
-
-        if (validateTodoLabel(inputValue) && isEnterKey(event)) {
-            this.setState(({ todos, inputValue }) => ({
-                todos: [...todos, createTodo(inputValue)],
-                inputValue: '',
-            }));
-        }
+    handleTodoCreate = (label: string) => {
+        this.setState(({ todos }) => ({
+            todos: [...todos, createTodo(label)],
+        }));
     };
 
     handleEditStart = (editUuid: TodoUUID) => {
@@ -145,25 +134,14 @@ class App extends Component<{}, AppState> {
     };
 
     render() {
-        const {
-            inputValue,
-            todos,
-            editUuid,
-            editValue,
-            toggleAllChecked,
-            selectedFilter,
-        } = this.state;
+        const { todos, editUuid, editValue, toggleAllChecked, selectedFilter } = this.state;
         const visibleTodos = filterTodosByType(todos, selectedFilter);
 
         return (
             <Fragment>
                 <section className="todoapp">
                     <PageHeader>
-                        <TodoInput
-                            onKeyUp={this.handleInputKeyUp}
-                            onChange={this.handleInputChange}
-                            value={inputValue}
-                        />
+                        <TodoInput onTodoCreate={this.handleTodoCreate} />
                     </PageHeader>
                     <TodoList
                         todos={visibleTodos}
