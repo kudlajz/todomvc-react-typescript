@@ -90,5 +90,13 @@
         "@typescript-eslint/member-delimiter-style": 0,
         "@typescript-eslint/type-annotation-spacing": 0,
         "@typescript-eslint/explicit-member-accessibility": 0
-    }
+    },
+    "overrides": [
+        {
+            "files": ["*.ts", "*.tsx"],
+            "rules": {
+                "react/prop-types": 0
+            }
+        }
+    ]
 }
