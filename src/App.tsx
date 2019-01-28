@@ -1,65 +1,98 @@
 import React, { Component, Fragment } from 'react';
 
-class App extends Component {
+import { Header, TodoFilter, TodoList } from './components';
+import { EFilters } from './enums';
+import { ITodo } from './interfaces';
+import withTodos from './withTodos';
+
+interface IProps {
+    todos: ITodo[];
+};
+
+interface IState {
+    todos: ITodo[];
+    currentFilter: EFilters;
+};
+
+class App extends Component<IProps, IState> {
+    state = {
+        todos: this.props.todos,
+        currentFilter: EFilters.ALL,
+    };
+
+    handleChangeFilter = (filter: EFilters) => {
+        this.setState({
+            currentFilter: filter,
+        });
+    };
+
+    handleClearCompleted = () => {
+        this.setState(({ todos }) => ({
+            todos: todos.filter((todo) => !todo.completed),
+        }));
+    };
+
+    handleCreateTodo = (todo: ITodo) => {
+        this.setState(({ todos }) => ({
+            todos: [
+                ...todos,
+                todo,
+            ],
+        }));
+    };
+
+    handleUpdateTodo = (updatedTodo: ITodo) => {
+        this.setState(({ todos }) => ({
+            todos: todos.map((todo) => {
+                if (todo.id === updatedTodo.id) {
+                    return updatedTodo;
+                }
+
+                return todo;
+            }),
+        }));
+    };
+
+    getTodos = () => {
+        const { todos, currentFilter } = this.state;
+
+        switch (currentFilter) {
+            case EFilters.ALL:
+                return todos;
+            case EFilters.ACTIVE:
+                return todos.filter((todo) => !todo.completed);
+            case EFilters.COMPLETED:
+                return todos.filter((todo) => todo.completed);
+        }
+    };
+
+    getNumberOfIncompleteTodos = () => this.state.todos.filter((todo: ITodo) => !todo.completed).length;
+
     render() {
+        const todos = this.getTodos();
+
         return (
             <Fragment>
                 <section className="todoapp">
-                    <header className="header">
-                        <h1>todos</h1>
-                        <input
-                            className="new-todo"
-                            placeholder="What needs to be done?"
-                            autoFocus
-                        />
-                    </header>
+                    <Header onSubmit={this.handleCreateTodo} />
                     {/* This section should be hidden by default and shown when there are todos */}
-                    <section className="main">
-                        <input id="toggle-all" className="toggle-all" type="checkbox" />
-                        <label htmlFor="toggle-all">Mark all as complete</label>
-                        <ul className="todo-list">
-                            {/* These are here just to show the structure of the list items */}
-                            {/* List items should get the class `editing` when editing and `completed` when marked as completed */}
-                            <li className="completed">
-                                <div className="view">
-                                    <input className="toggle" type="checkbox" defaultChecked />
-                                    <label>Taste JavaScript</label>
-                                    <button className="destroy" />
-                                </div>
-                                <input className="edit" defaultValue="Create a TodoMVC template" />
-                            </li>
-                            <li>
-                                <div className="view">
-                                    <input className="toggle" type="checkbox" />
-                                    <label>Buy a unicorn</label>
-                                    <button className="destroy" />
-                                </div>
-                                <input className="edit" defaultValue="Rule the web" />
-                            </li>
-                        </ul>
-                    </section>
+                    <TodoList
+                        todos={todos}
+                        onTodoChange={this.handleUpdateTodo}
+                    />
                     {/* This footer should hidden by default and shown when there are todos */}
                     <footer className="footer">
                         {/* This should be `0 items left` by default */}
                         <span className="todo-count">
-                            <strong>0</strong> item left
+                            <strong>{this.getNumberOfIncompleteTodos()}</strong> items left
                         </span>
                         {/* Remove this if you don't implement routing */}
-                        <ul className="filters">
-                            <li>
-                                <a className="selected" href="#/">
-                                    All
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#/active">Active</a>
-                            </li>
-                            <li>
-                                <a href="#/completed">Completed</a>
-                            </li>
-                        </ul>
+                        <TodoFilter
+                            current={this.state.currentFilter}
+                            onChange={this.handleChangeFilter}
+                        />
                         {/* Hidden if no completed items are left ↓ */}
-                        <button className="clear-completed">Clear completed</button>
+                        <button className="clear-completed" onClick={this.handleClearCompleted}>Clear completed</button>
                     </footer>
                 </section>
                 <footer className="info">
@@ -77,4 +110,4 @@ class App extends Component {
     }
 }
 
-export default App;
+export default withTodos(App);
